@@ -127,7 +127,7 @@ def quest_main_page(quest_id):
                 user.like = ' '.join(t)
                 quest.likes -= 1
             else:
-                user.like += str(quest_id) + ' '
+                user.like += ' ' + str(quest_id)
                 quest.likes += 1
                 if state == 'disliked':
                     t = user.dislike.split()
@@ -141,7 +141,7 @@ def quest_main_page(quest_id):
                 user.dislike = ' '.join(t)
                 quest.dislikes -= 1
             else:
-                user.dislike += str(quest_id) + ' '
+                user.dislike += ' ' + str(quest_id)
                 quest.dislikes += 1
                 if state == 'liked':
                     t = user.like.split()

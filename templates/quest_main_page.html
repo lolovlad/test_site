@@ -1,0 +1,44 @@
+﻿{% extends "base.html" %}
+
+{% block content %}
+<h1>{{quest.title}}</h1>
+<form method="post">
+	{% if current_user.is_authenticated%}
+		{% if state != "liked" %}
+			<input type="submit" class="btn btn-link" name="like" value="👍 Лайк {{quest.likes}}" >
+		{% else %}
+			<input type="submit" class="btn btn-success" name="like" value="👍 Лайк {{quest.likes}}" >
+		{% endif %}
+		{% if state != "disliked" %}
+        <input type="submit" class="btn btn-link" name="dislike" value="👎 Дизлайк {{quest.dislikes}}" >
+		{% else %}
+		<input type="submit" class="btn btn-danger" name="dislike" value="👎 Дизлайк {{quest.dislikes}}" >
+		{% endif %}
+	{% endif %}
+	<a> {{quest.views}} просмотров</a>
+</form>
+{% if current_user.is_authenticated %}
+    <a class="btn btn-primary " href="/quest/{{quest.id}}/commenting">Написать комментарий</a>
+{% endif %}
+{% for item in comments%}
+<div class="col-md6 border rounded">
+	<p>
+	<a><b>{{item.user.name}}</b> - {{item.created_date}} </a>
+	{% if item.edited == 1 %}
+	Изменен
+	{% endif %}
+	</p>
+    <p>
+        {{item.content}}
+	{% if current_user.is_authenticated and (current_user == item.user or current_user.moderation == 1) %}
+        <a href="/quest/{{quest.id}}/commenting/{{ item.id }}" class="btn btn-warning">
+            ✎
+        </a>
+        <a href="/quest/{{quest.id}}/delete_commentary/{{ item.id }}" class="btn btn-danger">
+            ✘
+        </a>
+	{% endif %}
+	</p>
+</div>
+{% endfor %}
+{% endblock %}

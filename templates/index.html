@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{state}}</h1>
+<p>
+	{% if current_user.is_authenticated %}
+		<a href="/quest_constructor" class="btn btn-primary"> Создать свой квест </a>
+	{% endif %}
+	<form method="post">
+		<a> Поиск по названию: </a>
+		<input name="text">
+		<input type="submit" class="btn btn-primary" name="search" value="🔍 Поиск" >
+	</form>
+</p>
+<p><form method="post">
+	<a> Сортировка: </a>
+	{% if state != "Новые квесты" %}
+		<input type="submit" class="btn btn-link" name="new" value="Новые квесты" >
+	{% else %}
+		<input type="submit" class="btn btn-info" name="new" value="Новые квесты" >
+	{% endif %}
+	{% if state != "По просмотрам" %}
+		<input type="submit" class="btn btn-link" name="views" value="По просмотрам" >
+	{% else %}
+		<input type="submit" class="btn btn-info" name="views" value="По просмотрам" >
+	{% endif %}
+	{% if state != "По лайкам/дизлайкам" %}
+		<input type="submit" class="btn btn-link" name="likes" value="По лайкам/дизлайкам" >
+	{% else %}
+		<input type="submit" class="btn btn-info" name="likes" value="По лайкам/дизлайкам" >
+	{% endif %}
+	{% if current_user.is_authenticated %}
+	{% if state != "Мои квесты" %}
+		<input type="submit" class="btn btn-link" name="my" value="Мои квесты" >
+	{% else %}
+		<input type="submit" class="btn btn-info" name="my" value="Мои квесты" >
+	{% endif %}
+	{% endif %}
+</form></p>
+{% for item in quest_list%}
+<div class="col-md6 border rounded">
+	<a class="navbar-brand" href="/quest/{{item.id}}">{{item.title}}</a>
+    <div>
+        {{item.description}}
+    </div>
+    <div>
+        Автор - <b>{{item.user.name}}</b>, Дата создания - {{item.created_date}}
+    </div>
+	<div>
+        {{item.views}} просмотров  {{item.likes}} 👍 {{item.dislikes}} 👎
+    </div>
+	<div>
+	{% if current_user.is_authenticated and (current_user == item.user or current_user.moderation == 1) %}
+        <a href="/quest_constructor/{{ item.id }}" class="btn btn-warning">
+            ✎ Редактировать
+        </a>
+        <a href="/quest_delete/{{ item.id }}" class="btn btn-danger">
+            ✘ Удалить
+        </a>
+	{% endif %}
+	</div>
+</div>
+{% endfor %}
+{% endblock %}

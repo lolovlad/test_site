@@ -1,8 +1,12 @@
+from Class.Application import Application
+from Controller.LoginController import LoginController
+
 from flask import Flask, render_template, redirect, request, abort, session
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from sqlalchemy import desc
 from data import db_session
 from data.users import User
+from Models.User import User
 from data.quests import Quest
 from data.commentary import Commentary
 from forms.user import RegisterForm
@@ -11,21 +15,21 @@ from forms.comment import Comment
 from forms.fake_quest import Fake_Quest
 import datetime
 
-app = Flask(__name__)
-login_manager = LoginManager()
-login_manager.init_app(app)
-app.config['SECRET_KEY'] = 'anus'
+Application().app = Flask(__name__)
+app = Application().app
+
+login_manager = Application().login_manager
 
 
 @login_manager.user_loader
 def load_user(user_id):
-    db_sess = db_session.create_session()
+    db_sess = Application().context
     return db_sess.query(User).get(user_id)
 
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    db_sess = db_session.create_session()
+    db_sess = Application().context
     quest_list = db_sess.query(Quest).order_by(desc(Quest.created_date))
     state = 'Новые квесты'
     if request.method == 'POST':
@@ -55,7 +59,7 @@ def reqister():
             return render_template('register.html', title='Регистрация',
                                    form=form,
                                    message="Пароли не совпадают")
-        db_sess = db_session.create_session()
+        db_sess = Application().context
         if db_sess.query(User).filter(User.email == form.email.data).first():
             return render_template('register.html', title='Регистрация',
                                    form=form,
@@ -77,7 +81,7 @@ def reqister():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
+        db_sess = Application().context
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
@@ -86,6 +90,12 @@ def login():
                                message="Неправильный логин или пароль",
                                form=form)
     return render_template('login.html', title='Авторизация', form=form)
+
+
+@app.route('/test/login', methods=['GET', 'POST'])
+def test_login():
+    controller = LoginController(None, None, login_user)
+    return controller()
 
 
 @app.route('/logout')
@@ -97,7 +107,7 @@ def logout():
 
 @app.route('/quest/<int:quest_id>', methods=['GET', 'POST'])
 def quest_main_page(quest_id):
-    db_sess = db_session.create_session()
+    db_sess = Application().context
     quest = db_sess.query(Quest).filter(Quest.id == quest_id).first()
     if not quest:
         abort(404)
@@ -159,7 +169,7 @@ def quest_main_page(quest_id):
 def add_commentary(quest_id):
     form = Comment()
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
+        db_sess = Application().context
         commentary = Commentary()
         commentary.content = form.content.data
         commentary.quest_id = quest_id
@@ -176,7 +186,7 @@ def add_commentary(quest_id):
 def edit_comment(quest_id, id):
     form = Comment()
     if request.method == "GET":
-        db_sess = db_session.create_session()
+        db_sess = Application().context
         commentary = db_sess.query(Commentary).filter(Commentary.id == id,
                                           Commentary.user == current_user
                                           ).first()
@@ -209,7 +219,7 @@ def edit_comment(quest_id, id):
 @app.route('/quest/<int:quest_id>/delete_commentary/<int:id>', methods=['GET', 'POST'])
 @login_required
 def comment_delete(quest_id, id):
-    db_sess = db_session.create_session()
+    db_sess = Application().context
     commentary = db_sess.query(Commentary).filter(Commentary.id == id,
                                       Commentary.user == current_user
                                       ).first()
@@ -245,7 +255,7 @@ def add_quest():
 def edit_quest(id):
     form = Fake_Quest()
     if request.method == "GET":
-        db_sess = db_session.create_session()
+        db_sess = Application().context
         quest = db_sess.query(Quest).filter(Quest.id == id,
                                           Quest.user == current_user
                                           ).first()
@@ -279,7 +289,7 @@ def edit_quest(id):
 @app.route('/quest_delete/<int:id>', methods=['GET', 'POST'])
 @login_required
 def quest_delete(id):
-    db_sess = db_session.create_session()
+    db_sess = Application().context
     quest = db_sess.query(Quest).filter(Quest.id == id,
                                           Quest.user == current_user
                                           ).first()
@@ -293,9 +303,10 @@ def quest_delete(id):
     return redirect('/')
 
 
-def main():    
-    db_session.global_init("db/quests_db.db")
-    app.run()
+def main():
+    Application().create_context("db/sound.db")
+    #db_session.global_init("db/quests_db.db")
+    app.run(debug=True)
 
 
 if __name__ == '__main__':

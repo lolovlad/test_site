@@ -1,10 +1,11 @@
 import datetime
 import sqlalchemy
 from sqlalchemy import orm
-from .db_session import SqlAlchemyBase
+#from .db_session import SqlAlchemyBase
+from Class.Application import Application
 
 
-class Commentary(SqlAlchemyBase):
+class Commentary(Application().model):
     __tablename__ = 'commentary'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, 

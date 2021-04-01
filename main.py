@@ -1,22 +1,30 @@
 from Class.Application import Application
+
 from Controller.LoginController import LoginController
+from Controller.ReqistrationController import ReqistrationController
+from Controller.UploadMusicController import UploadMusicController
+from Controller.ProfileController import MyProfileController
+
+from forms.LoginForm import LoginForm
+from forms.ReqistrationForm import RegisterForm
+from forms.UploadMusicForm import UploadMusicForm
+from forms.ProfileForm import ProfileForm
+
+from Models.User import User
+
+import os
 
 from flask import Flask, render_template, redirect, request, abort, session
-from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from flask_login import login_user, logout_user, login_required
 from sqlalchemy import desc
-from data import db_session
-from data.users import User
-from Models.User import User
-from data.quests import Quest
-from data.commentary import Commentary
-from forms.user import RegisterForm
-from forms.LoginForm import LoginForm
 from forms.comment import Comment
 from forms.fake_quest import Fake_Quest
 import datetime
 
 Application().app = Flask(__name__)
 app = Application().app
+
+app.config["FILE_DIR"] = os.path.dirname(os.path.abspath(__file__))
 
 login_manager = Application().login_manager
 
@@ -30,71 +38,50 @@ def load_user(user_id):
 @app.route("/", methods=['GET', 'POST'])
 def index():
     db_sess = Application().context
-    quest_list = db_sess.query(Quest).order_by(desc(Quest.created_date))
+    #quest_list = db_sess.query(Quest).order_by(desc(Quest.created_date))
     state = 'Новые квесты'
     if request.method == 'POST':
         if "new" in request.form:
             state = 'Новые квесты'
-            quest_list = db_sess.query(Quest).order_by(desc(Quest.created_date))
+            #quest_list = db_sess.query(Quest).order_by(desc(Quest.created_date))
         elif 'views' in request.form:
             state = 'По просмотрам'
-            quest_list = db_sess.query(Quest).order_by(desc(Quest.views))
+            #quest_list = db_sess.query(Quest).order_by(desc(Quest.views))
         elif 'likes' in request.form:
             state = 'По лайкам/дизлайкам'
-            quest_list = db_sess.query(Quest).order_by(desc(Quest.likes - Quest.dislikes))
+            #quest_list = db_sess.query(Quest).order_by(desc(Quest.likes - Quest.dislikes))
         elif 'my' in request.form:
             state = 'Мои квесты'
-            quest_list = db_sess.query(Quest).filter(Quest.user_id == current_user.id).order_by(desc(Quest.created_date))
+            #quest_list = db_sess.query(Quest).filter(Quest.user_id == current_user.id).order_by(desc(Quest.created_date))
         elif 'search' in request.form:
             state = 'Найденные по запросу квесты'
-            quest_list = db_sess.query(Quest).filter(Quest.title.like(f'%{request.form.get("text")}%')).order_by(desc(Quest.created_date))
-    return render_template("index.html", title='Fairy Tale', quest_list=quest_list, state=state)
+            #quest_list = db_sess.query(Quest).filter(Quest.title.like(f'%{request.form.get("text")}%')).order_by(desc(Quest.created_date))
+    return render_template("index.html", title='Fairy Tale', quest_list=[], state=state)
 
 
-@app.route('/register', methods=['GET', 'POST'])
-def reqister():
-    form = RegisterForm()
-    if form.validate_on_submit():
-        if form.password.data != form.password_again.data:
-            return render_template('register.html', title='Регистрация',
-                                   form=form,
-                                   message="Пароли не совпадают")
-        db_sess = Application().context
-        if db_sess.query(User).filter(User.email == form.email.data).first():
-            return render_template('register.html', title='Регистрация',
-                                   form=form,
-                                   message="Такой пользователь уже есть")
-        user = User(
-            name=form.name.data,
-            email=form.email.data,
-            about=form.about.data
-        )
-        user.set_password(form.password.data)
-        db_sess.add(user)
-        db_sess.commit()
-        login_user(user, remember=True)
-        return redirect("/")
-    return render_template('register.html', title='Регистрация', form=form)
+@app.route("/upload_music",  methods=['GET', 'POST'])
+@login_required
+def upload_music():
+    controller = UploadMusicController(model=UploadMusicForm())
+    return controller()
+
+
+@app.route("/my_profile",  methods=['GET', 'POST'])
+@login_required
+def my_profile():
+    controller = MyProfileController(model=ProfileForm())
+    return controller()
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        db_sess = Application().context
-        user = db_sess.query(User).filter(User.email == form.email.data).first()
-        if user and user.check_password(form.password.data):
-            login_user(user, remember=form.remember_me.data)
-            return redirect("/")
-        return render_template('login.html',
-                               message="Неправильный логин или пароль",
-                               form=form)
-    return render_template('login.html', title='Авторизация', form=form)
+    controller = LoginController(model=LoginForm(), login_user=login_user)
+    return controller()
 
 
-@app.route('/test/login', methods=['GET', 'POST'])
-def test_login():
-    controller = LoginController(None, None, login_user)
+@app.route('/register', methods=['GET', 'POST'])
+def reqister():
+    controller = ReqistrationController(model=RegisterForm(), login_user=login_user)
     return controller()
 
 
@@ -105,7 +92,7 @@ def logout():
     return redirect("/")
 
 
-@app.route('/quest/<int:quest_id>', methods=['GET', 'POST'])
+'''@app.route('/quest/<int:quest_id>', methods=['GET', 'POST'])
 def quest_main_page(quest_id):
     db_sess = Application().context
     quest = db_sess.query(Quest).filter(Quest.id == quest_id).first()
@@ -302,10 +289,11 @@ def quest_delete(id):
         abort(404)
     return redirect('/')
 
+'''
+
 
 def main():
     Application().create_context("db/sound.db")
-    #db_session.global_init("db/quests_db.db")
     app.run(debug=True)
 
 

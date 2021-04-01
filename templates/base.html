@@ -1,31 +1,52 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-          crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    rel="stylesheet">
     <title>{{title}}</title>
 </head>
 <body>
-<header>
-    <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand" href="/">Fairy Tale</a>
+<header class="header">
+    <div class="header_logo">
+        <a class="logo" href="/">musical wind</a>
+    </div>
+    <nav class="header_nav">
 	{% if current_user.is_authenticated %}
-    		<a class="navbar-brand" href="/logout">{{ current_user.name }}</a>
+        <div class="header_menu">
+            <h1>{{ current_user.name }}</h1>
+            <div class="img_menu"><img src="{{url_for('static', filename=current_user.icon)}}"></div>
+        </div>
 	{% else %}
-    		<p>
-        	<a class="btn btn-primary " href="/register">Зарегистрироваться</a>
-        	<a class="btn btn-success" href="/login">Войти</a>
-    		</p>
+        <a class="button" href="/register">Зарегистрироваться</a>
+        <a class="button" href="/login">Войти</a>
 	{% endif %}
     </nav>
 </header>
-<!-- Begin page content -->
-<main role="main" class="container">
+<main role="main">
+    <div class="menu_back">
+        <div class="button_close"><span class="material-icons">close</span></div>
+        <div class="menu_back_content menu_profile">
+            <div class="menu_profile_img"><img src="{{url_for('static', filename=current_user.icon)}}"></div>
+            <h1>{{ current_user.name }}</h1>
+        </div>
+        <span class="menu_back_line"></span>
+        <div class="menu_back_content">
+            <a class="button button_menu" href="/upload_music"><span class="material-icons">file_download</span>Загрузить музыку</a>
+            <a class="button button_menu" href="/my_profile"><span class="material-icons">account_circle</span>Профиль</a>
+        </div>
+        <span class="menu_back_line"></span>
+        <div class="menu_back_content">
+            <a class="button button_menu" href="/logout"><span class="material-icons">logout</span>Выход</a>
+        </div>
+    </div>
     {% block content %}{% endblock %}
 </main>
+<footer>
+
+</footer>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

@@ -14,7 +14,7 @@ class User(Application().model, UserMixin):
     sename = Column(String, nullable=True)
     nickname = Column(String, nullable=True)
     birthday = Column(DateTime, nullable=True)
-    icon = Column(LargeBinary, nullable=True)
+    icon = Column(String, nullable=True, default="img/lol.png")
 
     email = Column(String, index=True, unique=True, nullable=True)
     phone = Column(Integer, nullable=True)
@@ -23,8 +23,6 @@ class User(Application().model, UserMixin):
 
     hashed_password = Column(String, nullable=True)
 
-    quests = orm.relation("Quest", back_populates='user')
-    commentary = orm.relation('Commentary')
     @property
     def password(self):
         return self.hashed_password

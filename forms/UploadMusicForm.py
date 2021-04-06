@@ -6,7 +6,7 @@ from flask_wtf.file import FileField, FileRequired, FileAllowed
 
 class UploadMusicForm(FlaskForm):
     name = StringField('Название песни', validators=[DataRequired()])
-    img = FileField("Обложка", validators=[FileRequired(), FileAllowed(['jpg', 'png'], 'Images only!')])
+    img = FileField("Обложка", validators=[])
     tag = SelectField("Тип музыки",  choices=["рок", "реп", "кантри"])
     music = FileField("Музыка", validators=[FileRequired()])
     submit = SubmitField('Загрузить')

@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, IntegerField, DateTimeField
+from wtforms import StringField, SubmitField, IntegerField, DateField
 from wtforms.validators import DataRequired
 from wtforms.fields.html5 import EmailField
 from flask_wtf.file import FileField, FileRequired, FileAllowed
@@ -12,5 +12,5 @@ class ProfileForm(FlaskForm):
     phone = IntegerField('телефон', validators=[DataRequired()])
     email = EmailField('Почта', validators=[DataRequired()])
     img = FileField("Аватарка", validators=[FileRequired(), FileAllowed(['jpg', 'png'], 'Images only!')])
-    birthday = DateTimeField('День рождения', format='%m/%d/%Y')
+    birthday = DateField('День рождения', format='%d.%m.%Y')
     submit = SubmitField('Загрузить')

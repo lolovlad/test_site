@@ -20,7 +20,6 @@
 
 		<div class="file_input" id="dragArea">
 			<span class="material-icons">backup</span>
-			{{ form.img(id="input_file", hidden="") }}
 			{{ form.img.label }}
 			<button class="button button_form", id="button_file" type="button">Загрузить</button>
 		</div>
@@ -34,7 +33,7 @@
 
 		<div class="box_input">
 			{{ form.tag(class="input_selectitem") }}
-			{{ form.tag.label }}
+			{{ form.tag.label(class="select_lable")}}
 		</div>
 		{% for error in form.tag.errors %}
 			<div class="alert alert-danger" role="alert">
@@ -54,7 +53,7 @@
 		{% endfor %}
 
 
-        {{ form.submit(type="submit", class="button button_form") }}
+        {{ form.submit(class="button button_form", id="send") }}
         {{ message }}
     </form>
 </div>

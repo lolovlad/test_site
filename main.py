@@ -1,4 +1,5 @@
 from Class.Application import Application
+from Controller.LoadMusicController import LoadMusicController
 
 from Controller.LoginController import LoginController
 from Controller.ReqistrationController import ReqistrationController
@@ -14,7 +15,7 @@ from Models.User import User
 
 import os
 
-from flask import Flask, render_template, redirect, request, abort, session
+from flask import Flask, render_template, redirect, request, abort, session, make_response, jsonify
 from flask_login import login_user, logout_user, login_required
 from sqlalchemy import desc
 from forms.comment import Comment
@@ -66,10 +67,17 @@ def upload_music():
     return controller()
 
 
+@app.route("/load_music_view",  methods=['GET', 'POST'])
+def upload_music_view():
+    controller = LoadMusicController()
+    return controller(request)
+
+
 @app.route("/my_profile",  methods=['GET', 'POST'])
 @login_required
 def my_profile():
-    controller = MyProfileController(model=ProfileForm())
+    model = ProfileForm()
+    controller = MyProfileController(model=model)
     return controller()
 
 

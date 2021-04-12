@@ -6,7 +6,7 @@
 <div class="container">
     <div class="container_icon">
         <div class="icon_img">
-            <img class="icon", src="{{ url_for('static', filename=current_user.icon) }}">
+            <img class="icon", src="{{ url_for('static', filename=current_user.icon.replace('%5C','/')) }}">
             <div class="load_img">
                 <span class="material-icons">get_app</span>
             </div>
@@ -44,11 +44,10 @@
 </div>
 <div class="model_main" id="model">
 	<div class="model">
-		<form action="" method="post" class="form form_model", novalidate>
+		<form action="" method="post" class="form form_model", novalidate, enctype="multipart/form-data">
 			{{ form.hidden_tag() }}
             <div class="file_input" id="dragArea">
                 <span class="material-icons">backup</span>
-                {{ form.img(id="input_file", hidden="") }}
                 {{ form.img.label }}
                 <a class="button button_form", id="button_file">Загрузить</a>
             </div>

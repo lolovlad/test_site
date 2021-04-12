@@ -23,8 +23,8 @@ class UploadMusicController(IController):
             filename_music = os.path.join('sound', os.urandom(15).hex() + "." + filename_music[-1])
 
             sound = Sound(name=self.__model.name.data,
-                          img=os.path.normpath(filename_img),
-                          file_name=os.path.normpath(filename_music),
+                          img=filename_img.replace('\\', "/"),
+                          file_name=filename_music.replace('\\', "/"),
                           teg=self.__model.tag.data,
                           id_user=current_user.id)
 

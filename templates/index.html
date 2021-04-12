@@ -37,28 +37,7 @@
 	{% endif %}
 	{% endif %}
 </form></p>
-{% for item in quest_list%}
-<div class="col-md6 border rounded">
-	<a class="navbar-brand" href="/quest/{{item.id}}">{{item.title}}</a>
-    <div>
-        {{item.description}}
-    </div>
-    <div>
-        Автор - <b>{{item.user.name}}</b>, Дата создания - {{item.created_date}}
-    </div>
-	<div>
-        {{item.views}} просмотров  {{item.likes}} 👍 {{item.dislikes}} 👎
-    </div>
-	<div>
-	{% if current_user.is_authenticated and (current_user == item.user or current_user.moderation == 1) %}
-        <a href="/quest_constructor/{{ item.id }}" class="btn btn-warning">
-            ✎ Редактировать
-        </a>
-        <a href="/quest_delete/{{ item.id }}" class="btn btn-danger">
-            ✘ Удалить
-        </a>
-	{% endif %}
-	</div>
+<div class="list_music">
+	<script src="{{ url_for('static', filename='js/load_music.js') }}"></script>
 </div>
-{% endfor %}
 {% endblock %}

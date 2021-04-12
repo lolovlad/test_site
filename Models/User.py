@@ -1,6 +1,6 @@
 import datetime
 from sqlalchemy import orm
-from sqlalchemy import Column, Integer, String, LargeBinary, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, LargeBinary, Date, ForeignKey
 from Class.Application import Application
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -13,7 +13,7 @@ class User(Application().model, UserMixin):
     name = Column(String, nullable=True)
     sename = Column(String, nullable=True)
     nickname = Column(String, nullable=True)
-    birthday = Column(DateTime, nullable=True)
+    birthday = Column(Date, nullable=True)
     icon = Column(String, nullable=True, default="img/lol.png")
 
     email = Column(String, index=True, unique=True, nullable=True)

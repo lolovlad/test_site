@@ -17,7 +17,7 @@
 	{% if current_user.is_authenticated %}
         <div class="header_menu">
             <h1>{{ current_user.name }}</h1>
-            <div class="img_menu"><img src="{{url_for('static', filename=current_user.icon)}}"></div>
+            <div class="img_menu"><img src="{{url_for('static', filename=current_user.icon.replace('%5C','/'))}}"></div>
         </div>
 	{% else %}
         <a class="button" href="/register">Зарегистрироваться</a>
@@ -29,7 +29,7 @@
     <div class="menu_back">
         <div class="button_close"><span class="material-icons">close</span></div>
         <div class="menu_back_content menu_profile">
-            <div class="menu_profile_img"><img src="{{url_for('static', filename=current_user.icon)}}"></div>
+            <div class="menu_profile_img"><img src="{{url_for('static', filename=current_user.icon.replace('%5C','/'))}}"></div>
             <h1>{{ current_user.name }}</h1>
         </div>
         <span class="menu_back_line"></span>

@@ -15,16 +15,13 @@ class MyProfileController(IController):
     def __call__(self, *args, **kwargs):
         if self.__model.validate_on_submit():
             img = self.__model.img.data
-            filename_img = secure_filename(img.filename).split(".")
-            filename_img = os.path.join('img', os.urandom(15).hex() + "." + filename_img[-1])
-
-            user = User(name=self.__model.name.data,
-                        email=self.__model.email.data,
-                        sename=self.__model.sename.data,
-                        nickname=self.__model.nickname.data,
-                        phone=self.__model.phone.data,
-                        birthday=self.__model.birthday.data,
-                        img=os.path.normpath(filename_img))
+            if img is not None:
+                filename_img = secure_filename(img.filename).split(".")
+                filename_img = os.path.join('img', os.urandom(15).hex() + "." + filename_img[-1])
+                img.save(os.path.join(app().app.config["FILE_DIR"], "static", filename_img))
+                filename_img = filename_img.replace('\\', "/")
+            else:
+                filename_img = current_user.icon
 
             now_user = app().context.query(User).filter(User.id == current_user.id).first()
             now_user.name = self.__model.name.data
@@ -33,10 +30,8 @@ class MyProfileController(IController):
             now_user.nickname = self.__model.nickname.data
             now_user.phone = self.__model.phone.data
             now_user.birthday = self.__model.birthday.data
-            now_user.img = os.path.normpath(filename_img)
+            now_user.icon = filename_img
 
             app().context.commit()
-
-            img.save(os.path.join(app().app.config["FILE_DIR"], "static", filename_img))
             return render_template('profile.html', title='Профиль', form=self.__model)
         return render_template('profile.html', title='Профиль', form=self.__model)

@@ -13,7 +13,7 @@ class UploadMusicController(IController):
         self.__model = model
 
     def __call__(self, *args, **kwargs):
-        '''if self.__model.validate_on_submit():
+        if self.__model.validate_on_submit():
             img = self.__model.img.data
             music = self.__model.music.data
             filename_img = secure_filename(img.filename).split(".")
@@ -32,5 +32,5 @@ class UploadMusicController(IController):
             app().context.commit()
             img.save(os.path.join(app().app.config["FILE_DIR"], "static", filename_img))
             music.save(os.path.join(app().app.config["FILE_DIR"], "static", filename_music))
-            #return redirect("/")'''
+            #return redirect("/")
         return render_template('load_music.html', title='Регистрация', form=self.__model)

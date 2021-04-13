@@ -2,6 +2,7 @@
 let file;
 const inputFile = document.querySelector("#input_file") 
 let buttonFile = document.querySelector("#button_file")
+const buttonSend = document.querySelector("#send")
 
 function showFile(){
     const fileType = file.type;

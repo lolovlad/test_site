@@ -20,7 +20,6 @@ from flask_login import login_user, logout_user, login_required
 from sqlalchemy import desc
 from forms.comment import Comment
 from forms.fake_quest import Fake_Quest
-import datetime
 
 Application().app = Flask(__name__)
 app = Application().app

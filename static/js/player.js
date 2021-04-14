@@ -6,10 +6,11 @@ const nextBtn = document.querySelector("#next_sound")
 const pregBtn = document.querySelector("#preg_sound")
 const muteBtn = document.querySelector("#mute_sound")
 const seekSlider = document.querySelector("#slider")
-//const volumeSlider
+const volumeSlider = document.querySelector("#volume_slider")
 let seeking = false
 const curTimeText = document.querySelector("#current_time")
 const durTimeText = document.querySelector("#time_sound")
+const volumeText = document.querySelector("#volume_text")
 
 playList = ["lol", "pop", "info"]
 
@@ -29,6 +30,7 @@ seekSlider.addEventListener("mousemove", (e)=>{seek(e)});
 seekSlider.addEventListener("mouseup", ()=>{
     seeking = false
     audio.muted = false});
+volumeSlider.addEventListener("mousemove", setVolume)
 audio.addEventListener("timeupdate", ()=>{seekTimeUpdate()});
 audio.addEventListener("ended", ()=>{switchSound()});
 
@@ -39,6 +41,11 @@ function timeSoundView(time){
         second = `0${second}`
     
     return `${min}:${second}`
+}
+
+function updateIconVolume(type){
+    muteBtn.childNodes[1].innerHTML = type
+    menuVolume.childNodes[5].innerHTML = type
 }
 
 function playPause(){
@@ -60,14 +67,28 @@ function pregSound(){
 
 }
 
+function setVolume(){
+    audio.volume = volumeSlider.value / 100
+    volumeText.innerHTML = volumeSlider.value
+    if(50 <= volumeSlider.value <= 100){
+        typeVolume = "volume_up"
+    }else if(0 < volumeSlider.value < 50){
+        typeVolume = "volume_down"
+    }else{
+        typeVolume = "volume_mute"
+    }
+    updateIconVolume(typeVolume)
+}
+
 function muteSound(){
     if(audio.muted){
         audio.muted = false
-        muteBtn.innerHTML = typeVolume
+        typeVolume = 'volume_up'
     }else{
         audio.muted = true
-        muteBtn.innerHTML = '<span class="material-icons">volume_off</span>'
+        typeVolume = 'volume_off'
     }
+    updateIconVolume(typeVolume)
 }
 
 function seekTimeUpdate(){
@@ -99,3 +120,27 @@ function seekTimeUpdate(){
         }
     }
 }
+
+//*************************************************************/
+const menuVolume = document.querySelector(".menu_right_volume")
+
+muteBtn.addEventListener("contextmenu", (e)=>{
+    e.preventDefault();
+    menuVolume.style.display = "flex"
+    let mod = (menuVolume.offsetWidth - muteBtn.offsetWidth) / 2
+    menuVolume.style.left = `${muteBtn.offsetLeft - mod}px`
+    console.log(muteBtn.getBoundingClientRect().y, menuVolume.offsetHeight)
+    menuVolume.style.top = `${muteBtn.getBoundingClientRect().y - menuVolume.offsetHeight}px`
+    updateIconVolume(typeVolume)
+})
+
+document.addEventListener("click", (e)=>{
+    if (e.button !== 2){
+        menuVolume.style.display = "none"
+    }
+}, false)
+
+menuVolume.addEventListener("click", (e)=>{
+    e.stopPropagation();
+})
+

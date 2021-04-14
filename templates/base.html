@@ -59,13 +59,20 @@
                     <button id="preg_sound" class="button button_player"><span class="material-icons">skip_previous</span></button>
                     <button id="now_sound" class="button button_player"><span class="material-icons">play_arrow</span></button>
                     <button id="next_sound" class="button button_player"><span class="material-icons">skip_next</span></button>
-                    <button id="mute_sound" class="button button_player"><span class="material-icons">volume_up</span></button>
+                    <button id="mute_sound" class="button button_player">
+                        <span class="material-icons">volume_down</span>
+                    </button>
                 </div>
             </div>
             <div class="player_list_sound">
                 <button id="list_sound" class="button button_player"><span class="material-icons">reorder</span></button>
             </div>
         </div>
+    </div>
+    <div class="menu_right_volume">
+        <h3 id="volume_text">50</h3>
+        <input name="volume", type="range", min="0", max="100", id="volume_slider", value="50" class="volume_slider", step="1">
+        <span class="material-icons">volume_down</span>
     </div>
 
     {% block content %}{% endblock %}

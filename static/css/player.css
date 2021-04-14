@@ -6,7 +6,7 @@
     left: 0;
     background: black;
     z-index: 900;
-    box-shadow: 0 0 10px rgb(255, 255, 255);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .player_container{
@@ -64,4 +64,24 @@
 
 .player_list_sound{
     padding-right: 20px;
+}
+
+.menu_right_volume{
+    background-color: black;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    position: fixed;
+    width: 60px;
+    height: 200px;
+    z-index: 20;
+    color: white;
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+}
+
+.volume_slider{
+    transform: rotate(-90deg);
+    width: 110px;
 }

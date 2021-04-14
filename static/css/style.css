@@ -11,6 +11,10 @@
     font-family: 'Roboto', sans-serif;
 }
 
+button{
+    outline: none;
+}
+
 .main{
     min-height: 100vh;
     background-color: rgb(245, 245, 245);
@@ -199,6 +203,7 @@
     height: auto;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 0 10px rgb(0, 0, 0, 0.5);
 }
 
 .music_card_img{
@@ -218,6 +223,7 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    padding: 5px 15px;
 }
 
 .card_text_listener{

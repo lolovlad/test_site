@@ -7,6 +7,12 @@
     background: black;
     z-index: 900;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    transform: translateY(110%);
+    transition: 0.1s;
+}
+
+.player_active{
+    transform: translateY(0%);
 }
 
 .player_container{

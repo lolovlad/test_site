@@ -11,6 +11,11 @@
     font-family: 'Roboto', sans-serif;
 }
 
+a{
+    text-decoration: none;
+    text-transform: none;
+    color: #fff;
+}
 button{
     outline: none;
 }
@@ -337,4 +342,30 @@ button{
     text-align: center;
     color: rgb(207, 207, 207);
     
+}
+
+.list_sound_menu{
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    width: 400px;
+    height: 850px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgb(0, 0, 0, 0.5);
+}
+
+.wrapper{
+    font-weight: 400;
+    text-align: center;
+}
+
+.accordion{
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    border: 0px;
+    padding: 5px;
+    width: 100%;
+    text-align: left;
+    font-size: 10px;
 }

@@ -14,8 +14,9 @@ const volumeText = document.querySelector("#volume_text")
 
 playList = ["lol", "pop", "info"]
 
-audio.src = "/static/sound/2f2747bab958b9700b61200399c331.mp3"
-audio.loop = false
+audio.onloadedmetadata = function(){
+    durTimeText.innerHTML = timeSoundView(audio.duration)
+}
 
 playBtn.addEventListener("click", playPause);
 nextBtn.addEventListener("click", nextSound);
@@ -33,6 +34,25 @@ seekSlider.addEventListener("mouseup", ()=>{
 volumeSlider.addEventListener("mousemove", setVolume)
 audio.addEventListener("timeupdate", ()=>{seekTimeUpdate()});
 audio.addEventListener("ended", ()=>{switchSound()});
+
+function loadSound(soundFile, imgFile, nameMusic, nameAuter){
+    audio.src = soundFile
+    audio.loop = false
+    audio.preload = "metadata"
+    console.log(audio)
+    const player = document.querySelector(".player")
+
+    const img = player.querySelector(".player_info_img").childNodes[0]
+    const name_music = player.querySelector(".player_info_text").childNodes[1]
+    const name_auter = player.querySelector(".player_info_text").childNodes[3]
+
+    img.src = imgFile
+
+    name_music.innerHTML = nameMusic
+    name_auter.innerHTML = nameAuter
+
+    player.classList.add("player_active")
+}
 
 function timeSoundView(time){
     const min = Math.floor(time / 60)
@@ -70,9 +90,9 @@ function pregSound(){
 function setVolume(){
     audio.volume = volumeSlider.value / 100
     volumeText.innerHTML = volumeSlider.value
-    if(50 <= volumeSlider.value <= 100){
+    if(50 < volumeSlider.value && volumeSlider.value <= 100){
         typeVolume = "volume_up"
-    }else if(0 < volumeSlider.value < 50){
+    }else if(0 < volumeSlider.value && volumeSlider.value <= 50){
         typeVolume = "volume_down"
     }else{
         typeVolume = "volume_mute"
@@ -83,12 +103,11 @@ function setVolume(){
 function muteSound(){
     if(audio.muted){
         audio.muted = false
-        typeVolume = 'volume_up'
+        updateIconVolume(typeVolume)
     }else{
         audio.muted = true
-        typeVolume = 'volume_off'
+        updateIconVolume('volume_off')
     }
-    updateIconVolume(typeVolume)
 }
 
 function seekTimeUpdate(){
@@ -143,4 +162,59 @@ document.addEventListener("click", (e)=>{
 menuVolume.addEventListener("click", (e)=>{
     e.stopPropagation();
 })
+
+//*************************************************/
+window.addEventListener('popstate', function(e){
+    const url = new URL(window.location.href.replace("#", "?"))
+    const params = url.searchParams
+
+    if(params.get("type") == "play"){
+        const mass = {
+            id: params.get("id")
+        }
+    
+        fetch(`${window.origin}/get_music`, {
+            method:"POST",
+            credentials: "include",
+            body: JSON.stringify(mass),
+            cache: "no-cache",
+            headers: new Headers({
+                "content-type": "application/json"
+            })
+        })
+        .then((response)=>{
+            if(response.status !== 200){
+                console.log("lol")
+                return;
+            }
+            response.json().then((data)=>{
+                loadSound(data.data.file_name, data.data.img, data.data.name, data.data.id_user)
+            })
+        })
+    }
+    else if(params.get("type") == "add_list"){
+        const mass = {
+            id: params.get("id")
+        }
+    
+        fetch(`${window.origin}/add_list_music`, {
+            method:"POST",
+            credentials: "include",
+            body: JSON.stringify(mass),
+            cache: "no-cache",
+            headers: new Headers({
+                "content-type": "application/json"
+            })
+        })
+        .then((response)=>{
+            if(response.status !== 200){
+                console.log("lol")
+                return;
+            }
+            response.json().then((data)=>{
+                console.log(data.data)
+            })
+        })
+    }
+});
 

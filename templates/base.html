@@ -16,7 +16,7 @@
 	{% if current_user.is_authenticated %}
         <div class="header_menu">
             <h1>{{ current_user.name }}</h1>
-            <div class="img_menu"><img src="{{url_for('static', filename=current_user.icon.replace('%5C','/'))}}"></div>
+            <div class="img_menu"><img src="{{url_for('static', filename=current_user.icon)}}"></div>
         </div>
 	{% else %}
         <a class="button" href="/register">Зарегистрироваться</a>
@@ -25,6 +25,7 @@
     </nav>
 </header>
 <main class="main">
+    {% if current_user.is_authenticated %}
     <div class="menu_back">
         <div class="button_close"><span class="material-icons">close</span></div>
         <div class="menu_back_content menu_profile">
@@ -41,7 +42,7 @@
             <a class="button button_menu" href="/logout"><span class="material-icons">logout</span>Выход</a>
         </div>
     </div>
-
+    {% endif %}
     <div class="player">
         <div class="player_container">
             <div class="player_info_sound">
@@ -60,7 +61,7 @@
                     <button id="now_sound" class="button button_player"><span class="material-icons">play_arrow</span></button>
                     <button id="next_sound" class="button button_player"><span class="material-icons">skip_next</span></button>
                     <button id="mute_sound" class="button button_player">
-                        <span class="material-icons">volume_down</span>
+                        <span class="material-icons">volume_up</span>
                     </button>
                 </div>
             </div>
@@ -70,9 +71,29 @@
         </div>
     </div>
     <div class="menu_right_volume">
-        <h3 id="volume_text">50</h3>
-        <input name="volume", type="range", min="0", max="100", id="volume_slider", value="50" class="volume_slider", step="1">
-        <span class="material-icons">volume_down</span>
+        <h3 id="volume_text">100</h3>
+        <input name="volume", type="range", min="0", max="100", id="volume_slider", value="100" class="volume_slider", step="1">
+        <span class="material-icons">volume_up</span>
+    </div>
+    <div class="list_sound_menu">
+        <div class="wrapper">
+            <button class="accordion" type="button">Section 1</button>
+            <div class="panel">
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius 
+                    aliquid laboriosam perspiciatis voluptate alias praesentium, 
+                    dolor porro error, optio placeat asperiores velit incidunt 
+                    excepturi consequatur autem voluptatem tempora, odit nulla.</p>
+            </div>
+        </div>
+        <div class="wrapper">
+            <button class="accordion" type="button">Section 1</button>
+            <div class="panel">
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius 
+                    aliquid laboriosam perspiciatis voluptate alias praesentium, 
+                    dolor porro error, optio placeat asperiores velit incidunt 
+                    excepturi consequatur autem voluptatem tempora, odit nulla.</p>
+            </div>
+        </div>
     </div>
 
     {% block content %}{% endblock %}

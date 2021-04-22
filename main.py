@@ -1,5 +1,6 @@
 from Class.Application import Application
 
+from Controller.ListSoundLoadController import ListSoundLoadController
 from Controller.LoadMusicController import LoadMusicController
 from Controller.LoginController import LoginController
 from Controller.ReqistrationController import ReqistrationController
@@ -74,10 +75,16 @@ def load_music_view():
     return controller(request)
 
 
+@app.route("/list_sound_view",  methods=['GET', 'POST'])
+def list_sound_view():
+    controller = ListSoundLoadController()
+    return controller(request)
+
+
 @app.route("/get_music",  methods=['GET', 'POST'])
 def get_music():
     controller = GetMusicController()
-    return controller(request)
+    return make_response(jsonify({"data": controller(request.get_json())}), 200)
 
 
 @app.route("/add_list_music",  methods=['GET', 'POST'])

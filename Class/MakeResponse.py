@@ -19,5 +19,5 @@ class MakeResponse:
         del mas['_sa_instance_state']
         for i in mas:
             if type(mas[i]) == bytes:
-                mas[i] = len(pickle.loads(mas[i]))
+                mas[i] = pickle.loads(mas[i])
         return mas

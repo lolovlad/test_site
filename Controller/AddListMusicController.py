@@ -19,7 +19,8 @@ class AddListMusicController(IController):
         list_sound = app().context.query(ListSound).filter(ListSound.id_user == current_user.id).first()
 
         list_sound_dump = pickle.loads(list_sound.sounds)
-        list_sound_dump.append(req["id"])
+        list_sound_dump = set(list_sound_dump)
+        list_sound_dump.add(req["id"])
         list_sound.sounds = pickle.dumps(list_sound_dump)
 
         app().context.commit()

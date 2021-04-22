@@ -16,15 +16,40 @@ menu_down.addEventListener("click", (e)=>{
 
 
 
+
 const model_wind_button = document.querySelector("#button_model")
 const model_wind = document.querySelector("#model")
 
-model_wind_button.addEventListener("click", (e)=>{
-    model_wind.classList.add("model_activ");
-})
+try {
+    model_wind_button.addEventListener("click", (e)=>{
+        model_wind.classList.add("model_activ");
+    })
+    
+    model_wind.addEventListener("click", (e)=>{
+        if(e.target == model_wind){
+            model_wind.classList.remove("model_activ");
+        }
+    })
+  } catch (err) {}
 
-model_wind.addEventListener("click", (e)=>{
-    if(e.target == model_wind){
-        model_wind.classList.remove("model_activ");
+
+
+setTimeout(()=>{
+    const acc = document.getElementsByClassName("accordion")
+
+    for(let i = 0; acc.length > i; i++){
+        acc[i].onclick = function(){
+            this.classList.toggle("active")
+    
+            const panel = this.nextElementSibling
+    
+            if(panel.style.maxHeight){
+                panel.style.maxHeight = null
+                panel.style.padding = null
+            }else{
+                panel.style.padding = "18px"     
+                panel.style.maxHeight = panel.scrollHeight + "px"       
+            }
+        }
     }
-})
+}, 1000)

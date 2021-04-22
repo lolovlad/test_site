@@ -12,7 +12,10 @@ const curTimeText = document.querySelector("#current_time")
 const durTimeText = document.querySelector("#time_sound")
 const volumeText = document.querySelector("#volume_text")
 
+let defaultPlayList = []
 playList = ["lol", "pop", "info"]
+let currentPlayList = []
+let currentSound
 
 audio.onloadedmetadata = function(){
     durTimeText.innerHTML = timeSoundView(audio.duration)
@@ -33,13 +36,13 @@ seekSlider.addEventListener("mouseup", ()=>{
     audio.muted = false});
 volumeSlider.addEventListener("mousemove", setVolume)
 audio.addEventListener("timeupdate", ()=>{seekTimeUpdate()});
-audio.addEventListener("ended", ()=>{switchSound()});
+audio.addEventListener("ended", ()=>{nextSound()});
 
-function loadSound(soundFile, imgFile, nameMusic, nameAuter){
+function loadSound(soundFile, imgFile, nameMusic, nameAuter, id){
+    currentSound = id
     audio.src = soundFile
     audio.loop = false
     audio.preload = "metadata"
-    console.log(audio)
     const player = document.querySelector(".player")
 
     const img = player.querySelector(".player_info_img").childNodes[0]
@@ -51,7 +54,10 @@ function loadSound(soundFile, imgFile, nameMusic, nameAuter){
     name_music.innerHTML = nameMusic
     name_auter.innerHTML = nameAuter
 
+    seekSlider.value = 0
+
     player.classList.add("player_active")
+    playPause()
 }
 
 function timeSoundView(time){
@@ -80,7 +86,18 @@ function playPause(){
 }
 
 function nextSound(){
-
+    let info = 0
+    for(let i = 0; i < currentPlayList.length; i++){
+        if(currentPlayList[i].id == currentSound){
+            info = i
+        } 
+    }
+    if(info + 1 > currentPlayList.length - 1){
+        sound = currentPlayList[0]
+    }else {
+        sound = currentPlayList[info + 1]
+    }
+    loadSound(sound.file_name, sound.img, sound.name, sound.id_user, sound.id)
 }
 
 function pregSound(){
@@ -110,13 +127,6 @@ function muteSound(){
     }
 }
 
-function seekTimeUpdate(){
-
-}
-
-function switchSound(){
-
-}
 
 function seek(e){
     if(audio.duration == 0){
@@ -145,22 +155,88 @@ const menuVolume = document.querySelector(".menu_right_volume")
 
 muteBtn.addEventListener("contextmenu", (e)=>{
     e.preventDefault();
-    menuVolume.style.display = "flex"
+    menuVolume.classList.toggle("active_music")
     let mod = (menuVolume.offsetWidth - muteBtn.offsetWidth) / 2
     menuVolume.style.left = `${muteBtn.offsetLeft - mod}px`
-    console.log(muteBtn.getBoundingClientRect().y, menuVolume.offsetHeight)
     menuVolume.style.top = `${muteBtn.getBoundingClientRect().y - menuVolume.offsetHeight}px`
     updateIconVolume(typeVolume)
 })
 
-document.addEventListener("click", (e)=>{
-    if (e.button !== 2){
-        menuVolume.style.display = "none"
-    }
-}, false)
-
 menuVolume.addEventListener("click", (e)=>{
     e.stopPropagation();
+})
+
+//************************************************************ */
+const menuListSound = document.querySelector(".list_sound_menu")
+
+function viewListSound(data, where, id){
+    for(music of data){
+        const card = `<div class="music_card">
+        <div class="music_card_img list">
+            <img src="${music.img}">
+            <div class="music_card_play list_play">
+                <a href="#type=play&id=${music.id}&list_sound=${id}"><span class="material-icons">play_arrow</span></a>
+                <a href="#type=add_list&id=${music.id}"><span class="material-icons">playlist_add</span></a>
+            </div>
+        </div>
+        <div class="music_card_text">
+            <div class="card_text_listener list_listener">
+                <h1>${music.name}</h1>
+                <h3>${music.listening}<span class="material-icons">headset</span></h3>
+            </div>
+            <div class="card_text_info list_info">
+                <h3><span class="material-icons">thumb_up</span>${music.like}</h3>
+                <h3><span class="material-icons">thumb_down</span>${music.dislike}</h3>
+                <h3><span class="material-icons">question_answer</span>0</h3>
+            </div>
+        </div>
+    </div>`
+        where.insertAdjacentHTML("beforeEnd", card);
+    }    
+}
+
+function viewList(data, where){
+    for(let i = 0 ; i < data.length; i++){
+        const listView = `
+        <div class="wrapper">
+            <button class="accordion" type="button">${data[i].name}</button>
+            <div class="panel">
+            </div>
+        </div>`
+        where.insertAdjacentHTML("beforeEnd", listView);
+        const info_panel = where.querySelector(".panel")
+        viewListSound(data[i].sounds, info_panel, i)
+    }
+}
+
+
+fetch(`${window.origin}/list_sound_view`, {
+    method:"POST",
+    credentials: "include",
+    body: JSON.stringify({}),
+    cache: "no-cache",
+    headers: new Headers({
+        "content-type": "application/json"
+    })
+})
+.then((response)=>{
+    if(response.status !== 200){
+        console.log("lol")
+        return;
+    }
+    response.json().then((data)=>{
+        playList = data.data
+        viewList(data.data, menuListSound)
+    })
+})
+
+const butMenuListSound = document.querySelector("#list_sound")
+
+butMenuListSound.addEventListener("click", ()=>{
+    menuListSound.classList.toggle("active_menu")
+    const player = document.querySelector(".player")
+    menuListSound.style.left = `${player.offsetWidth - menuListSound.offsetWidth}px`
+    menuListSound.style.top = `${butMenuListSound.getBoundingClientRect().y - menuListSound.offsetHeight}px`
 })
 
 //*************************************************/
@@ -188,7 +264,13 @@ window.addEventListener('popstate', function(e){
                 return;
             }
             response.json().then((data)=>{
-                loadSound(data.data.file_name, data.data.img, data.data.name, data.data.id_user)
+                loadSound(data.data.file_name, data.data.img, data.data.name, data.data.id_user, data.data.id)
+                try{
+                    idList = params.get("list_sound")
+                    currentPlayList = playList[idList].sounds
+                }catch (err) {
+                    currentPlayList = defaultPlayList
+                }
             })
         })
     }

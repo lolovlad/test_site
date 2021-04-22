@@ -21,6 +21,7 @@ window.onload = ()=>{
         }
         response.json().then((data)=>{
             view(data.data)
+            defaultPlayList = data.data
         })
     })
 }

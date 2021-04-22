@@ -20,6 +20,10 @@ button{
     outline: none;
 }
 
+button:focus{
+    outline: none;
+}
+
 .main{
     min-height: 100vh;
     background-color: rgb(245, 245, 245);
@@ -209,6 +213,7 @@ button{
     display: flex;
     flex-direction: column;
     box-shadow: 0 0 10px rgb(0, 0, 0, 0.5);
+    margin-bottom: 10px;
 }
 
 .music_card_img{
@@ -345,13 +350,21 @@ button{
 }
 
 .list_sound_menu{
-    display: flex;
-    flex-direction: row;
+    display: none;
+    flex-direction: column;
     justify-content: start;
-    width: 400px;
+    width: 1000px;
     height: 850px;
     background-color: #fff;
     box-shadow: 0 0 10px rgb(0, 0, 0, 0.5);
+    position: fixed;
+    overflow: auto;
+    padding-bottom: 10px;
+}
+
+.active_menu{
+    display: flex;
+    z-index: 100;
 }
 
 .wrapper{
@@ -367,5 +380,60 @@ button{
     padding: 5px;
     width: 100%;
     text-align: left;
+    font-size: 20px;
+    transition: .4s;
+}
+
+.accordion.active, .accordion.active:hover{
+    background-color: #9B0A07;
+}
+
+.panel{
+    padding: 0 18px;
+    color: black;
+    max-height: 0;
+    overflow: hidden;
+    width: 100%;
+    transition: max-height .2s ease-out;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.list{
+    width: 250px;
+    height: 250px;
+}
+
+.list_play span{
+    font-size: 25px;
+}
+
+.list_info {
     font-size: 10px;
+}
+
+.list_listener h1{
+    text-align: left;
+    font-size: 15px;
+}
+
+.list_listener h3{
+    font-size: 10px;
+}
+
+.list_listener span{
+    font-size: 10px;
+}
+
+.list_info h3{
+    font-size: 15px;
+}
+
+.list_info span{
+    font-size: 15px;
+}
+
+.active_music{
+    display: flex;
 }

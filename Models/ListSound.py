@@ -10,4 +10,4 @@ class ListSound(Application().model):
     id = Column(Integer, primary_key=True)
     id_user = Column(Integer)
     name = Column(String, nullable=True)
-    sounds = Column(LargeBinary, nullable=True, default=pickle.dumps([]))
+    sounds = Column(LargeBinary, nullable=True, default=pickle.dumps(set()))

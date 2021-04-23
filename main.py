@@ -1,9 +1,11 @@
 from Class.Application import Application
 
 from Controller.ListSoundLoadController import ListSoundLoadController
+from Controller.LoadCommentsController import LoadCommentsController
 from Controller.LoadMusicController import LoadMusicController
 from Controller.LoginController import LoginController
 from Controller.ReqistrationController import ReqistrationController
+from Controller.UploadCommentController import UploadCommentController
 from Controller.UploadMusicController import UploadMusicController
 from Controller.ProfileController import MyProfileController
 from Controller.GetMusicController import GetMusicController
@@ -59,7 +61,7 @@ def index():
         elif 'search' in request.form:
             state = 'Найденные по запросу квесты'
             #quest_list = db_sess.query(Quest).filter(Quest.title.like(f'%{request.form.get("text")}%')).order_by(desc(Quest.created_date))
-    return render_template("index.html", title='Fairy Tale', quest_list=[], state=state)
+    return render_template("index.html", title='Fairy Tale', quest_list=[], state=state, form=ProfileForm())
 
 
 @app.route("/upload_music",  methods=['GET', 'POST'])
@@ -69,9 +71,22 @@ def upload_music():
     return controller()
 
 
+@app.route("/load_view_comments",  methods=['GET', 'POST'])
+def load_view_comments():
+    controller = LoadCommentsController()
+    return controller(request)
+
+
 @app.route("/load_music_view",  methods=['GET', 'POST'])
 def load_music_view():
     controller = LoadMusicController()
+    return controller(request)
+
+
+@app.route("/upload_comment",  methods=['GET', 'POST'])
+@login_required
+def upload_comment():
+    controller = UploadCommentController()
     return controller(request)
 
 

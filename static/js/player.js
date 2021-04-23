@@ -101,7 +101,18 @@ function nextSound(){
 }
 
 function pregSound(){
-
+    let info = 0
+    for(let i = 0; i < currentPlayList.length; i++){
+        if(currentPlayList[i].id == currentSound){
+            info = i
+        } 
+    }
+    if(info - 1 < 0){
+        sound = currentPlayList[currentPlayList.length - 1]
+    }else {
+        sound = currentPlayList[info - 1]
+    }
+    loadSound(sound.file_name, sound.img, sound.name, sound.id_user, sound.id)
 }
 
 function setVolume(){
@@ -187,7 +198,7 @@ function viewListSound(data, where, id){
             <div class="card_text_info list_info">
                 <h3><span class="material-icons">thumb_up</span>${music.like}</h3>
                 <h3><span class="material-icons">thumb_down</span>${music.dislike}</h3>
-                <h3><span class="material-icons">question_answer</span>0</h3>
+                <a href="#id=${music.id}" id="commens_button"><h3><span class="material-icons">question_answer</span>${music.comments}</h3></a>
             </div>
         </div>
     </div>`

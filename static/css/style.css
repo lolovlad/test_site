@@ -263,6 +263,7 @@ button:focus{
     display: flex;
     align-items: center;
     padding-left: 5px;
+    cursor: pointer;
 }
 
 .music_card_play{
@@ -384,6 +385,10 @@ button:focus{
     transition: .4s;
 }
 
+#comments{
+    color: black;
+}
+
 .accordion.active, .accordion.active:hover{
     background-color: #9B0A07;
 }
@@ -436,4 +441,23 @@ button:focus{
 
 .active_music{
     display: flex;
+}
+
+#commens_button{
+    color: black;
+}
+
+.comments_list{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+}
+
+.comment{
+    width: 90%;
+    height: auto;
+    margin: 5px auto;
+    display: flex;
+    align-items: center;
 }

@@ -21,3 +21,8 @@ class MakeResponse:
             if type(mas[i]) == bytes:
                 mas[i] = pickle.loads(mas[i])
         return mas
+
+    @classmethod
+    def make_response_comments(cls, mas):
+        del mas['_sa_instance_state']
+        return mas

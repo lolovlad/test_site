@@ -52,4 +52,38 @@ setTimeout(()=>{
             }
         }
     }
-}, 1000)
+}, 100)
+
+
+const commentsVal = document.querySelector("#comments")
+const btnComment = document.querySelector("#submit_comment")
+btnComment.addEventListener("click", ()=>{
+    
+    const url = new URL(window.location.href.replace("#", "?"))
+    const params = url.searchParams
+
+    const message = {
+        text: commentsVal.value,
+        id: params.get("id") 
+    }
+
+    fetch(`${window.origin}/upload_comment`, {
+        method:"POST",
+        credentials: "include",
+        body: JSON.stringify(message),
+        cache: "no-cache",
+        headers: new Headers({
+            "content-type": "application/json"
+        })
+    })
+    .then((response)=>{
+        if(response.status !== 200){
+            console.log("lol")
+            return;
+        }
+        response.json().then((data)=>{
+            console.log(data)
+            commentsVal.value = null
+        })
+    })
+})
